@@ -46,7 +46,7 @@ def toolner_to_tag(text):
  text="".join(text2)#re.sub("[word][/word]","","".join(text2))
  return text.replace("[word][/word]","")
 # แปลง text ให้เป็น conll2002
-def text2conll2002(text,pos=True):
+def text2conll2002(text,word_seg,pos=True):
     """
     ใช้แปลงข้อความให้กลายเป็น conll2002
     """
@@ -57,7 +57,7 @@ def text2conll2002(text,pos=True):
     j=0
     conll2002=""
     for tagopen,text,tagclose in tag:
-        word_cut=word_tokenize(text,engine=thaicut) # ใช้ตัวตัดคำ newmm
+        word_cut=word_seg(text) # ใช้ตัวตัดคำ newmm
         i=0
         txt5=""
         while i<len(word_cut):
@@ -93,14 +93,7 @@ def postag(text):
         text+=data.split('\t')[0]+'\t'+list_word[i][1]+'\t'+data.split('\t')[1]+'\n'
         i+=1
     return text
-# เขียนไฟล์ข้อมูล conll2002
-def write_conll2002(file_name,data):
-    """
-    ใช้สำหรับเขียนไฟล์
-    """
-    with codecs.open(file_name, "w", "utf-8-sig") as temp:
-        temp.write(data)
-    return True
+
 # อ่านข้อมูลจากไฟล์
 def get_data(fileopen):
 	"""
@@ -110,19 +103,12 @@ def get_data(fileopen):
 		lines = f.read().splitlines()
 	return [a for a in lines if Unique(a)] # เอาไม่ซ้ำกัน
 
-def alldata(lists):
-    text=""
-    for data in lists:
-        text+=text2conll2002(data)
-        text+='\n'
-    return text
-
-def alldata_list(lists):
+def alldata_list(lists,word_seg):
     data_all=[]
     for data in lists:
         data_num=[]
         try:
-            txt=text2conll2002(data,pos=True).split('\n')
+            txt=text2conll2002(data,word_seg=word_seg,pos=True).split('\n')
             for d in txt:
                 tt=d.split('\t')
                 if d!="":
@@ -241,9 +227,16 @@ def extract_features(doc,features_train):
 def get_labels(doc):
     return [tag for (token,postag,tag) in doc]
 
-def train(name:str,path_data:str,path:str="./",test:bool=False,test_size:float=0.2,features=doc2features):
+def train(
+    name:str,
+    path_data:str,
+    path:str="./",
+    test:bool=False,
+    test_size:float=0.2,
+    word_seg=word_tokenize,
+    features=doc2features):
     data=getall(get_data(path_data))
-    datatofile=alldata_list(data)
+    datatofile=alldata_list(data,word_seg=word_seg)
     X_data = [extract_features(doc,doc2features) for doc in datatofile]
     y_data = [get_labels(doc) for doc in datatofile]
     crf = sklearn_crfsuite.CRF(
@@ -255,7 +248,7 @@ def train(name:str,path_data:str,path:str="./",test:bool=False,test_size:float=0
     model_filename=path+name+".model"
     )
     if test:
-        X, X_test, y, y_test = train_test_split(X_data, y_data, test_size=0.2)
+        X, X_test, y, y_test = train_test_split(X_data, y_data, test_size=test_size)
         crf.fit(X, y);
         labels = list(crf.classes_)
         labels.remove('O')
