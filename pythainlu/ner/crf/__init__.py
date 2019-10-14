@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from .train import train
-
-# -*- coding: utf-8 -*-
 """
 Named-entity recognizer
 """
@@ -16,12 +14,8 @@ from pythainlp.tag import pos_tag
 from pythainlp.tokenize import word_tokenize
 from pythainlp.util import isthai
 
-_WORD_TOKENIZER = "newmm"  # ตัวตัดคำ
-
-
 def _is_stopword(word: str) -> bool:  # เช็คว่าเป็นคำฟุ่มเฟือย
     return word in thai_stopwords()
-
 
 def _doc2features(doc, i) -> dict:
     word = doc[i][0]
@@ -77,7 +71,7 @@ def _doc2features(doc, i) -> dict:
 class model:
     def __init__(self,path_model,features=_doc2features,word_seg=word_tokenize):
         """
-        Thai named-entity recognizer
+        CRF named-entity recognizer
 
         :param string path_model: path model
         :param function features: features function

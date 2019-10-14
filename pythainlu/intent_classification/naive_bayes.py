@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import List
 import nltk
-def train(train_data:List[tuple],get_features:object,test_data=None)->tuple:
+def train(name,train_data:List[tuple],get_features:object,test_data=None)->tuple:
     """
     Train Naive Bayes Classification
 
