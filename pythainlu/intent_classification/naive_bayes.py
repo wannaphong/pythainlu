@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from typing import List
 import nltk
-def naive_bayes(train_data:List[tuple],get_features:object,test_data=None)->tuple:
+def train(train_data:List[tuple],get_features:object,test_data=None)->tuple:
     """
-    Naive Bayes Classification
+    Train Naive Bayes Classification
 
     :param list train_data: list train data of tuple (text,tag)
     :param object get_features: function of features
@@ -15,5 +15,8 @@ def naive_bayes(train_data:List[tuple],get_features:object,test_data=None)->tupl
     classifier = nltk.NaiveBayesClassifier.train(data_train)
     if test_data!=None:
         data_test= [(get_features(text), tag) for (text, tag) in test_data]
-        return (classifier,nltk.classify.accuracy(classifier, data_test))
+        return (classifier, nltk.classify.accuracy(classifier, data_test))
     return (classifier,)
+def predict(model,text,get_features):
+    feature = get_features(text)
+    return (model.classify(feature), model.prob_classify(feature))
