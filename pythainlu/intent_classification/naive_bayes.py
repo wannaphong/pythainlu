@@ -13,8 +13,8 @@ def train(train_data:List[tuple],get_features:object,test_data=None)->tuple:
     """
     data_train = [(get_features(text), tag) for (text, tag) in train_data]
     classifier = nltk.NaiveBayesClassifier.train(data_train)
-    if test_data!=None:
-        data_test= [(get_features(text), tag) for (text, tag) in test_data]
+    if test_data != None:
+        data_test = [(get_features(text), tag) for (text, tag) in test_data]
         return (classifier, nltk.classify.accuracy(classifier, data_test))
     return (classifier,)
 def predict(model,text,get_features):
