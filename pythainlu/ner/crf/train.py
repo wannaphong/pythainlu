@@ -4,7 +4,7 @@ import nltk
 import re
 from sklearn_crfsuite import scorers,metrics
 from sklearn.metrics import make_scorer
-from sklearn.model_selection import cross_validate,train_test_split
+from sklearn.model_selection import train_test_split
 import sklearn_crfsuite
 from pythainlp.corpus.common import thai_stopwords
 from pythainlp.util import isthai
