@@ -114,7 +114,7 @@ def eval(model, iterator, f,tag2idx, idx2tag):
     print("f1=%.2f"%f1)
     return precision, recall, f1
 
-def train_go(train_dataset,tag_all,logdir,eval_dataset=None,ep=30,lr=0.0001,batch_size=128,finetuning=False,top_rnns=False):
+def train_go(train_dataset,tag_all,logdir,eval_dataset=None,num_workers=1,ep=30,lr=0.0001,batch_size=128,finetuning=False,top_rnns=False):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     train_dataset = NerDataset(train_dataset,tag_all)
@@ -127,11 +127,11 @@ def train_go(train_dataset,tag_all,logdir,eval_dataset=None,ep=30,lr=0.0001,batc
     train_iter = data.DataLoader(dataset=train_dataset,
                                  batch_size=batch_size,
                                  shuffle=True,
-                                 num_workers=4,
+                                 num_workers=num_workers,
                                  collate_fn=pad)
     if eval_dataset!= None:
         eval_dataset = NerDataset(eval_dataset,tag_all)
-        eval_iter = data.DataLoader(dataset=eval_dataset,batch_size=batch_size,shuffle=False,num_workers=4,collate_fn=pad)
+        eval_iter = data.DataLoader(dataset=eval_dataset,batch_size=batch_size,shuffle=False,num_workers=num_workers,collate_fn=pad)
 
     optimizer = optim.Adam(model.parameters(), lr = lr)
     criterion = nn.CrossEntropyLoss(ignore_index=0)
