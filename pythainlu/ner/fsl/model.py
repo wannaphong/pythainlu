@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 from pythainlu.ner.fsl.validation import compute_f1
 from keras.models import Model, load_model
